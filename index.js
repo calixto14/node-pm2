@@ -8,6 +8,11 @@ app.get("/send-msg", async(req, res) => {
     await sendData({log : "ok"})
     res.send("Hello world")
 });
+
+app.get("/send-other", async(req, res)=>{
+    await sendData("test-queue2", {log : "ok2"})
+    res.send("another endpoint")
+})
 app.listen(PORT, async() => {
     await connectQueue();
     console.log("Server running at port " + PORT)
@@ -26,11 +31,11 @@ async function connectQueue() {
     }
 }
 
-async function sendData (data) {
+async function sendData (queue,data) {
     // send data to queue
-    await channel.sendToQueue("test-queue", Buffer.from(JSON.stringify(data)));
+    await channel.sendToQueue(queue, Buffer.from(JSON.stringify(data)));
         
     // close the channel and connection
-    await channel.close();
-    await connection.close(); 
+    // await channel.close();
+    // await connection.close(); 
 }
